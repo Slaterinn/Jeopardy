@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center justify-between mb-6 flex-wrap gap-2">
-    <h1 class="text-3xl font-extrabold">Taken Jeopardy</h1>
+    <h1 class="text-3xl font-extrabold">Jeopardy</h1>
 
     <div class="flex gap-2 flex-wrap">
       <button
