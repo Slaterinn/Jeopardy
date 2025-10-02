@@ -1,4 +1,18 @@
 <script setup>
+useHead({
+  title: 'Jeopardy Game | Play Custom Trivia Online',
+  meta: [
+    { name: 'description', content: 'Create and play custom Jeopardy-style trivia games with friends. Free, fun, and easy to share.' },
+    { name: 'keywords', content: 'jeopardy, trivia, quiz, custom game, party game' },
+    { property: 'og:title', content: 'Play Custom Jeopardy Online' },
+    { property: 'og:description', content: 'Host your own Jeopardy-style trivia game. Works on desktop & mobile.' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://yourdomain.netlify.app/' },
+    { property: 'og:image', content: 'https://yourdomain.netlify.app/preview.png' },
+    { name: 'twitter:card', content: 'summary_large_image' }
+  ]
+})
+
 import { ref, watch, onMounted } from 'vue'
 
 // Jeopardy game components
