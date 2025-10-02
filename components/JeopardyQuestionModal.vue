@@ -30,7 +30,7 @@
             v-if="!question?.revealed"
             @click="reveal"
             class="bg-green-500 text-white px-8 py-4 rounded text-3xl hover:bg-green-600"
-          >
+            aria-label="Reveal question">
             Reveal Answer
           </button>
 
@@ -44,7 +44,7 @@
                 ? 'bg-indigo-700 text-white hover:bg-indigo-800'
                 : 'bg-indigo-600 text-white hover:bg-indigo-700'
             ]"
-          >
+            aria-label="Toggle taken">
             {{ question?.taken ? 'Unmark Taken' : 'Mark Taken' }}
           </button>
 
@@ -52,7 +52,7 @@
           <button
             @click="$emit('close')"
             class="bg-gray-500 text-white px-8 py-4 rounded text-3xl hover:bg-gray-600"
-          >
+            aria-label="Go Back">
             Back
           </button>
         </div>

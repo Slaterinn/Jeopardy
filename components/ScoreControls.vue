@@ -26,13 +26,14 @@ function adjustScore(index, amount) {
         <button
           @click="adjustScore(index, +100)"
           class="bg-green-500 text-white py-1 rounded hover:bg-green-600"
+          aria-label="Adjust score"
         >
           +100
         </button>
         <button
           @click="adjustScore(index, -100)"
           class="bg-red-500 text-white py-1 rounded hover:bg-red-600"
-        >
+          aria-label="Adjust score">
           -100
         </button>
       </div>

@@ -31,7 +31,7 @@ function removePlayer(index) {
   <button
     @click="addPlayer"
     class="bg-blue-500 text-white px-4 py-1 rounded self-stretch w-full sm:w-auto"
-  >
+    aria-label="Add player">
     Add Player
   </button>
 </div>
@@ -39,7 +39,7 @@ function removePlayer(index) {
   <div class="flex gap-2 flex-wrap">
     <div v-for="(player, index) in players" :key="index" class="bg-gray-100 px-3 py-1 rounded flex items-center gap-2">
       <span>{{ player.name }}</span>
-      <button @click="removePlayer(index)" class="text-red-500 font-bold">✕</button>
+      <button @click="removePlayer(index)" class="text-red-500 font-bold" aria-label="Remove player">✕</button>
     </div>
   </div>
 </template>

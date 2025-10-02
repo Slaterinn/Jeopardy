@@ -11,13 +11,13 @@
         <button
           @click="$emit('cancel')"
           class="px-6 py-2 bg-gray-300 rounded hover:bg-gray-400"
-        >
+          aria-label="Cancel">
           Cancel
         </button>
         <button
           @click="$emit('confirm')"
           class="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-        >
+          aria-label="Confirm">
           Confirm
         </button>
       </div>

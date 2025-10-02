@@ -5,7 +5,7 @@
       <button
         @click="addCategory"
         class="px-4 py-2 bg-blue-600 text-white rounded cursor-pointer"
-      >
+        aria-label="Add category">
         Add Category
       </button>
     </div>
@@ -30,7 +30,7 @@
           @click="deleteCategory(ci)"
           class="absolute top-1 right-1 bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700 cursor-pointer"
           title="Delete category"
-        >
+          aria-label="Delete category">
           ✕
         </button>
       </div>
@@ -46,14 +46,14 @@
             v-if="cat.questions[i - 1]"
             @click="openEditor(ci, i - 1)"
             class="w-full h-24 text-3xl font-bold flex items-center justify-center rounded bg-yellow-400 hover:bg-yellow-500 text-blue-900 shadow-lg"
-          >
+            aria-label="Open editor">
             {{ cat.questions[i - 1].value }}
           </button>
           <button
             v-else
             @click="addQuestion(ci, i - 1)"
             class="w-full h-24 bg-gray-200 text-gray-500 rounded"
-          >
+            aria-label="Add Question">
             +
           </button>
         </div>
@@ -93,13 +93,13 @@
           <button
             @click="closeEditor"
             class="px-4 py-2 bg-gray-400 text-white rounded"
-          >
+            aria-label="Close editor">
             Cancel
           </button>
           <button
             @click="saveQuestion"
             class="px-4 py-2 bg-blue-600 text-white rounded"
-          >
+            aria-label="Save Question">
             Save
           </button>
         </div>

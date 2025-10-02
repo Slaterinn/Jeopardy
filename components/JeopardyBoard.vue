@@ -32,7 +32,7 @@
             v-if="!cat.questions[rowIndex - 1].taken"
             @click="openQuestion(ci, rowIndex - 1)"
             class="tile-front w-full h-full"
-          >
+            aria-label="Open question">
             {{ cat.questions[rowIndex - 1].value }}
           </button>
 
