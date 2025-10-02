@@ -14,6 +14,8 @@ useHead({
 })
 
 import { ref, watch, onMounted } from 'vue'
+// Import tutorial overlay
+import TutorialOverlay from '~/components/TutorialOverlay.vue'
 
 // Jeopardy game components
 import JeopardyToolbar from '~/components/JeopardyToolbar.vue'
@@ -25,6 +27,7 @@ import ScoreboardChart from '~/components/ScoreboardChart.vue'
 import PlayerManager from '~/components/PlayerManager.vue'
 import ScoreControls from '~/components/ScoreControls.vue'
 
+const showTutorial = ref(false)
 const mode = ref('edit')
 
 // Always initialize a reactive object
@@ -39,6 +42,9 @@ onMounted(() => {
 
   const savedTeams = localStorage.getItem('jeopardyTeams')
   if (savedTeams) teams.value = JSON.parse(savedTeams)
+
+  const seen = localStorage.getItem('jeopardyTutorialSeen')
+  if (!seen) showTutorial.value = true
 })
 
 // Persist to localStorage automatically (deep watch)
@@ -113,6 +119,8 @@ function importBoard(event) {
 
 <template>
   <div class="p-6 max-w-7xl mx-auto">
+    <TutorialOverlay v-if="showTutorial" @close="showTutorial = false" />
+
     <JeopardyToolbar
       :mode="mode"
       @toggleMode="toggleMode"
