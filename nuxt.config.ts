@@ -25,7 +25,10 @@ export default defineNuxtConfig({
         // For Windows tiles
         { name: 'msapplication-TileColor', content: '#ffffff' },
         // Theme color for mobile browsers
-        { name: 'theme-color', content: '#ffffff' }
+        { name: 'theme-color', content: '#ffffff' },
+        { name: 'apple-mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+        { name: 'apple-mobile-web-app-title', content: 'Jeopardy' }
       ]
     }
   },
