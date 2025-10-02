@@ -15,12 +15,16 @@
 
     <!-- Question rows -->
     <template v-for="rowIndex in maxRows" :key="'row-' + rowIndex">
-      <div v-for="(cat, ci) in board.categories" :key="'q-' + ci + '-' + rowIndex" class="perspective">
+      <div
+        v-for="(cat, ci) in board.categories"
+        :key="'q-' + ci + '-' + rowIndex"
+        class="perspective"
+      >
         <div
           v-if="cat.questions[rowIndex - 1]"
           class="relative w-full h-32 transition-transform duration-700 transform"
           :class="{
-            'rotate-y-180': activeQuestion && activeQuestion.ci === ci && activeQuestion.qi === rowIndex-1 && activeQuestion.revealed
+            'rotate-y-180': isRevealed(ci, rowIndex - 1)
           }"
         >
           <!-- Front / normal tile -->
@@ -33,13 +37,18 @@
           </button>
 
           <!-- Taken / gray tile -->
-          <div v-else class="tile-taken w-full h-full flex items-center justify-center font-bold text-3xl">
+          <div
+            v-else
+            class="tile-taken w-full h-full flex items-center justify-center font-bold text-3xl"
+          >
             {{ cat.questions[rowIndex - 1].value }}
           </div>
 
           <!-- Back of tile for flip (question revealed) -->
-          <div v-if="activeQuestion && activeQuestion.ci === ci && activeQuestion.qi === rowIndex-1"
-               class="tile-back w-full h-full">
+          <div
+            v-if="activeQuestion && activeQuestion.ci === ci && activeQuestion.qi === rowIndex - 1"
+            class="tile-back w-full h-full flex items-center justify-center p-2 text-center"
+          >
             {{ activeQuestion.question || 'No question' }}
           </div>
         </div>
@@ -64,9 +73,11 @@ import JeopardyQuestionModal from '~/components/JeopardyQuestionModal.vue'
 const props = defineProps({
   board: { type: Object, required: true },
 })
+const emit = defineEmits(['update:board'])
 
 const activeQuestion = ref(null)
 
+// Compute max rows for layout
 const maxRows = computed(() =>
   Math.max(...props.board.categories.map(c => c.questions.length))
 )
@@ -78,10 +89,6 @@ function openQuestion(ci, qi) {
     ...q,
     ci,
     qi,
-    taken: q.taken || false,
-    revealed: q.revealed || false,
-    question: q.question || '',
-    answer: q.answer || '',
     category: props.board.categories[ci].title,
   }
 }
@@ -98,15 +105,48 @@ function revealAnswer() {
   toggleQuestionTaken(true)
 }
 
-// Toggle taken / unmark taken
+// Toggle taken / unmark taken immutably
 function toggleQuestionTaken(forceTaken = null) {
   if (!activeQuestion.value) return
-  const q = props.board.categories[activeQuestion.value.ci].questions[activeQuestion.value.qi]
+  const { ci, qi } = activeQuestion.value
+  const oldQ = props.board.categories[ci].questions[qi]
 
-  if (forceTaken === true) q.taken = true
-  else if (forceTaken === false) q.taken = false
-  else q.taken = !q.taken
+  const updatedQ = {
+    ...oldQ,
+    revealed: oldQ.revealed || activeQuestion.value.revealed,
+    taken:
+      forceTaken === true ? true :
+      forceTaken === false ? false :
+      !oldQ.taken
+  }
 
-  activeQuestion.value.taken = q.taken
+  const newBoard = {
+    ...props.board,
+    categories: props.board.categories.map((cat, cIdx) => {
+      if (cIdx !== ci) return cat
+      return {
+        ...cat,
+        questions: cat.questions.map((q, qIdx) =>
+          qIdx === qi ? updatedQ : q
+        ),
+      }
+    }),
+  }
+
+  emit('update:board', newBoard)
+
+  // Update local activeQuestion copy
+  activeQuestion.value.taken = updatedQ.taken
+  activeQuestion.value.revealed = updatedQ.revealed
+}
+
+// Helper to determine if a tile should show as revealed
+function isRevealed(ci, qi) {
+  return (
+    activeQuestion.value &&
+    activeQuestion.value.ci === ci &&
+    activeQuestion.value.qi === qi &&
+    activeQuestion.value.revealed
+  )
 }
 </script>

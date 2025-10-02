@@ -11,12 +11,11 @@ import ScoreboardChart from '~/components/ScoreboardChart.vue'
 import PlayerManager from '~/components/PlayerManager.vue'
 import ScoreControls from '~/components/ScoreControls.vue'
 
-
-
 const mode = ref('edit')
+
+// Always initialize a reactive object
 const board = ref({ categories: [] })
 const teams = ref([])
-
 const players = ref([])
 
 // Load from localStorage on mount
@@ -28,7 +27,7 @@ onMounted(() => {
   if (savedTeams) teams.value = JSON.parse(savedTeams)
 })
 
-// Persist to localStorage automatically
+// Persist to localStorage automatically (deep watch)
 watch(
   board,
   (newBoard) =>
@@ -47,34 +46,33 @@ function toggleMode() {
   mode.value = mode.value === 'edit' ? 'presentation' : 'edit'
 }
 
+// Reset board safely without reassigning the ref directly
 function resetBoard() {
-  board.value.categories.forEach((cat) =>
-    cat.questions.forEach((q) => {
-      q.revealed = false
-      q.taken = false  // <--- reset taken status too
-    })
-  )
-  teams.value.forEach((t) => (t.score = 0))
+  const newBoard = {
+    ...board.value,
+    categories: board.value.categories.map(cat => ({
+      ...cat,
+      questions: cat.questions.map(q => ({ ...q, revealed: false, taken: false }))
+    }))
+  }
+  board.value = newBoard
+
+  teams.value = teams.value.map(t => ({ ...t, score: 0 }))
 }
 
 const showResetModal = ref(false)
 
 function confirmReset() {
-  board.value.categories.forEach((cat) =>
-    cat.questions.forEach((q) => {
-      q.revealed = false
-      q.taken = false
-    })
-  )
-  teams.value.forEach((t) => (t.score = 0))
+  resetBoard()
   showResetModal.value = false
 }
 
 // Export JSON
 function exportBoard() {
-  const blob = new Blob([JSON.stringify({ board: board.value, teams: teams.value }, null, 2)], {
-    type: 'application/json',
-  })
+  const blob = new Blob(
+    [JSON.stringify({ board: board.value, teams: teams.value }, null, 2)],
+    { type: 'application/json' }
+  )
   const link = document.createElement('a')
   link.href = URL.createObjectURL(blob)
   link.download = 'jeopardy-quiz.json'
@@ -89,9 +87,9 @@ function importBoard(event) {
   reader.onload = (e) => {
     try {
       const data = JSON.parse(e.target.result)
-      if (data.board) board.value = data.board
-      if (data.teams) teams.value = data.teams
-    } catch (err) {
+      if (data.board) board.value = { ...data.board }
+      if (data.teams) teams.value = data.teams.map(t => ({ ...t }))
+    } catch {
       alert('Invalid JSON file')
     }
   }

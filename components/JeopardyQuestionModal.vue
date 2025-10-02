@@ -53,7 +53,7 @@
             @click="$emit('close')"
             class="bg-gray-500 text-white px-8 py-4 rounded text-3xl hover:bg-gray-600"
           >
-            Cancel
+            Back
           </button>
         </div>
       </div>
