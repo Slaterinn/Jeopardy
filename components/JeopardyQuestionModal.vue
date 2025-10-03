@@ -39,7 +39,7 @@
           @click="$emit('close')"
           class="px-6 py-3 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
         >
-          Cancel
+          Back
         </button>
 
         <button
@@ -52,8 +52,8 @@
 
         <button
           @click="$emit('toggle-taken')"
-          :class="question.taken ? 'bg-indigo-800' : 'bg-indigo-600'"
-          class="px-6 py-3 text-white rounded-lg hover:bg-indigo-700"
+          :class="question.taken ? 'bg-purple-800' : 'bg-purple-600'"
+          class="px-6 py-3 text-white rounded-lg hover:bg-purple-700"
         >
           {{ question.taken ? 'Unmark Taken' : 'Mark Taken' }}
         </button>
