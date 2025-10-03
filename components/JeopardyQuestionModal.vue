@@ -14,6 +14,15 @@
         {{ question.question || "No question yet" }}
       </div>
 
+      <!-- Optional image for the question -->
+      <div v-if="question.imageUrl" class="my-4">
+        <img 
+          :src="question.imageUrl" 
+          alt="Question image" 
+          class="max-w-full max-h-60 mx-auto rounded shadow-lg"
+        />
+      </div>
+
       <!-- Answer with transition -->
       <transition name="reveal-fade">
         <div

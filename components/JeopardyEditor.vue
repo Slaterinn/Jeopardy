@@ -82,6 +82,16 @@
           ></textarea>
         </div>
         <div class="mb-4">
+          <label class="block font-semibold mb-1">Image URL</label>
+          <input
+            v-model="localQuestion.imageUrl"
+            type="text"
+            class="w-full border rounded p-2"
+            placeholder="Enter image URL..."
+          />
+        </div>
+
+        <div class="mb-4">
           <label class="block font-semibold mb-1">Answer</label>
           <input
             v-model="localQuestion.answer"
@@ -120,13 +130,6 @@ const emit = defineEmits(['update:board'])
 const activeQuestion = ref(null)
 const localQuestion = reactive({ question: '', answer: '' })
 
-/* Local reactive copy of categories
-const localCategories = reactive(
-  props.board.categories.map(cat => ({
-    title: cat.title,
-    questions: cat.questions.map(q => ({ ...q }))
-  }))
-)*/
 const localCategories = reactive([])
 
 // sync localCategories when board prop changes
@@ -155,6 +158,7 @@ function addCategory() {
       value: v,
       question: '',
       answer: '',
+      imageUrl: '',
       revealed: false
     }))
   }
@@ -201,6 +205,7 @@ function addQuestion(ci, qi) {
         value: (qi + 1) * 100,
         question: '',
         answer: '',
+        imageUrl: '', 
         revealed: false
       }
       return { ...cat, questions: newQuestions }
@@ -210,11 +215,11 @@ function addQuestion(ci, qi) {
 }
 
 function openEditor(ci, qi) {
-  const category = localCategories[ci]
-  if (!category || !category.questions[qi]) return
-  activeQuestion.value = { ci, qi, value: category.questions[qi].value }
-  localQuestion.question = category.questions[qi].question
-  localQuestion.answer = category.questions[qi].answer
+  activeQuestion.value = { ci, qi, value: localCategories[ci].questions[qi].value }
+  const q = localCategories[ci].questions[qi]
+  localQuestion.question = q.question
+  localQuestion.answer = q.answer
+  localQuestion.imageUrl = q.imageUrl || ''
 }
 
 function closeEditor() {
@@ -234,7 +239,8 @@ function saveQuestion() {
       newQuestions[qi] = {
         ...newQuestions[qi],
         question: localQuestion.question,
-        answer: localQuestion.answer
+        answer: localQuestion.answer,
+        imageUrl: localQuestion.imageUrl
       }
       return { ...cat, questions: newQuestions }
     })
