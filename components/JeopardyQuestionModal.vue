@@ -1,77 +1,65 @@
 <template>
-  <transition name="fade">
-    <div
-      v-if="visible"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4"
-    >
-      <div class="flex flex-col items-center justify-center w-full h-full p-8 text-center">
-        <!-- Points -->
-        <h2 class="text-[6vw] sm:text-[5vw] font-bold text-white mb-6">
-          {{ question?.value }} points
-        </h2>
+  <div
+    v-if="visible"
+    class="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4"
+  >
+    <div class="absolute inset-0 bg-black/70" @click="$emit('close')"></div>
+    <div class="bg-white rounded-lg shadow-lg max-w-2xl w-full p-8 relative z-10 text-center space-y-6">
+      <h3 class="text-2xl font-bold">
+        {{ question.category }} — {{ question.value }}
+      </h3>
 
-        <!-- Question -->
-        <p class="text-[8vw] sm:text-[6vw] font-extrabold text-white break-words leading-tight">
-          {{ question?.question }}
-        </p>
+      <!-- Question text -->
+      <div class="text-xl text-gray-900">
+        {{ question.question || "No question yet" }}
+      </div>
 
-        <!-- Answer -->
-        <p
-          v-if="question?.revealed"
-          class="mt-8 text-[6vw] sm:text-[5vw] italic text-gray-300 break-words leading-snug"
+      <!-- Answer with transition -->
+      <transition name="reveal-fade">
+        <div
+          v-if="question.revealed"
+          class="mt-6 bg-green-100 border-l-4 border-green-500 p-4 rounded-lg text-green-800 text-2xl font-extrabold"
         >
-          Answer: {{ question.answer }}
-        </p>
-
-        <!-- Buttons -->
-        <div class="flex justify-center space-x-8 mt-12">
-          <!-- Reveal Answer -->
-          <button
-            v-if="!question?.revealed"
-            @click="reveal"
-            class="bg-green-500 text-white px-8 py-4 rounded text-3xl hover:bg-green-600"
-            aria-label="Reveal question">
-            Reveal Answer
-          </button>
-
-          <!-- Toggle Taken -->
-          <button
-            v-if="!question?.revealed || question?.revealed"
-            @click="$emit('toggle-taken')"
-            :class="[
-              'px-8 py-4 rounded text-3xl',
-              question?.revealed || question?.taken
-                ? 'bg-indigo-700 text-white hover:bg-indigo-800'
-                : 'bg-indigo-600 text-white hover:bg-indigo-700'
-            ]"
-            aria-label="Toggle taken">
-            {{ question?.taken ? 'Unmark Taken' : 'Mark Taken' }}
-          </button>
-
-          <!-- Cancel -->
-          <button
-            @click="$emit('close')"
-            class="bg-gray-500 text-white px-8 py-4 rounded text-3xl hover:bg-gray-600"
-            aria-label="Go Back">
-            Back
-          </button>
+          {{ question.answer || "No answer yet" }}
         </div>
+      </transition>
+
+      <!-- Buttons -->
+      <div class="flex justify-center gap-4 mt-8">
+        <button
+          @click="$emit('close')"
+          class="px-6 py-3 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
+        >
+          Cancel
+        </button>
+
+        <button
+          v-if="!question.revealed"
+          @click="$emit('reveal')"
+          class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+        >
+          Reveal Answer
+        </button>
+
+        <button
+          @click="$emit('toggle-taken')"
+          :class="question.taken ? 'bg-indigo-800' : 'bg-indigo-600'"
+          class="px-6 py-3 text-white rounded-lg hover:bg-indigo-700"
+        >
+          {{ question.taken ? 'Unmark Taken' : 'Mark Taken' }}
+        </button>
       </div>
     </div>
-  </transition>
+  </div>
 </template>
 
 <script setup>
 const props = defineProps({
   visible: Boolean,
-  question: Object,
+  question: {
+    type: Object,
+    default: () => ({})
+  }
 })
-
 const emit = defineEmits(['close', 'reveal', 'toggle-taken'])
-
-function reveal() {
-  // Reveal the answer and automatically mark taken
-  emit('reveal')
-  emit('toggle-taken')
-}
 </script>
