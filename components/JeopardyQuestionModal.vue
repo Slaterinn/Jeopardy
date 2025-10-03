@@ -15,11 +15,12 @@
       </div>
 
       <!-- Optional image for the question -->
-      <div v-if="question.imageUrl" class="my-4">
+      <div v-if="question.imageUrl" class="my-4 overflow-auto">
         <img 
           :src="question.imageUrl" 
           alt="Question image" 
-          class="max-w-full max-h-60 mx-auto rounded shadow-lg"
+          loading="lazy"
+          class="max-w-full max-h-80 mx-auto rounded shadow-lg"
         />
       </div>
 
@@ -37,7 +38,7 @@
       <div class="flex justify-center gap-4 mt-8">
         <button
           @click="$emit('close')"
-          class="px-6 py-3 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
+          class="px-6 py-3 bg-indigo-300 text-white rounded-lg hover:bg-indigo-400"
         >
           Back
         </button>
@@ -45,15 +46,15 @@
         <button
           v-if="!question.revealed"
           @click="$emit('reveal')"
-          class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
         >
           Reveal Answer
         </button>
 
         <button
           @click="$emit('toggle-taken')"
-          :class="question.taken ? 'bg-purple-800' : 'bg-purple-600'"
-          class="px-6 py-3 text-white rounded-lg hover:bg-purple-700"
+          :class="question.taken ? 'bg-indigo-800' : 'bg-indigo-600'"
+          class="px-6 py-3 text-white rounded-lg hover:bg-indigo-700"
         >
           {{ question.taken ? 'Unmark Taken' : 'Mark Taken' }}
         </button>
