@@ -22,7 +22,8 @@
         class="bg-blue-800 text-white text-center font-bold text-xl p-4 rounded relative"
       >
         <input
-          v-model="cat.title"
+          v-model="localCategories[ci].title"
+          @input="updateCategoryTitle(ci, localCategories[ci].title)"
           class="bg-transparent text-center w-full font-bold text-xl border-b border-white focus:outline-none"
           placeholder="Category"
         />
@@ -178,6 +179,17 @@ function deleteCategory(ci) {
   }
   emit('update:board', newBoard)
 }
+
+function updateCategoryTitle(ci, newTitle) {
+  const newBoard = {
+    ...props.board,
+    categories: props.board.categories.map((cat, cIdx) =>
+      cIdx === ci ? { ...cat, title: newTitle } : cat
+    )
+  }
+  emit('update:board', newBoard)
+}
+
 
 function addQuestion(ci, qi) {
   const newBoard = {
