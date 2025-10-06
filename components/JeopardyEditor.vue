@@ -90,7 +90,14 @@
             placeholder="Enter image URL..."
           />
         </div>
-
+        <div class="mb-4">
+          <label class="block font-semibold mb-1">Sound URL</label>
+          <input
+            v-model="localQuestion.soundUrl"
+            class="w-full border rounded p-2"
+            placeholder="Optional sound URL (e.g. Dropbox direct link)"
+          />
+        </div>
         <div class="mb-4">
           <label class="block font-semibold mb-1">Answer</label>
           <input
@@ -159,6 +166,7 @@ function addCategory() {
       question: '',
       answer: '',
       imageUrl: '',
+      soundUrl: '',
       revealed: false
     }))
   }
@@ -206,6 +214,7 @@ function addQuestion(ci, qi) {
         question: '',
         answer: '',
         imageUrl: '', 
+        soundUrl: '',
         revealed: false
       }
       return { ...cat, questions: newQuestions }
@@ -220,6 +229,7 @@ function openEditor(ci, qi) {
   localQuestion.question = q.question
   localQuestion.answer = q.answer
   localQuestion.imageUrl = q.imageUrl || ''
+  localQuestion.soundUrl = q.soundUrl || ''
 }
 
 function closeEditor() {
@@ -240,7 +250,8 @@ function saveQuestion() {
         ...newQuestions[qi],
         question: localQuestion.question,
         answer: localQuestion.answer,
-        imageUrl: localQuestion.imageUrl
+        imageUrl: localQuestion.imageUrl,
+        soundUrl: localQuestion.soundUrl
       }
       return { ...cat, questions: newQuestions }
     })
@@ -248,4 +259,38 @@ function saveQuestion() {
   emit('update:board', newBoard)
   closeEditor()
 }
+
+
+// Fylgist með link á hljóðfæla og breyti link þannig að það séu meiri líkur á að það virki
+watch(
+  () => localQuestion.soundUrl,
+  (newVal) => {
+    if (!newVal) return;
+
+    let directUrl = newVal.trim();
+
+    // 🎧 Google Drive share link → direct download
+    if (directUrl.includes("drive.google.com")) {
+      const match = directUrl.match(/[-\w]{25,}/); // extract file ID
+      if (match) {
+        directUrl = `https://drive.google.com/uc?export=download&id=${match[0]}`;
+      }
+    }
+
+    // 🎧 Dropbox share link → direct content
+    if (directUrl.includes("dropbox.com")) {
+      directUrl = directUrl
+        .replace("www.dropbox.com", "dl.dropboxusercontent.com")
+        .replace("?dl=0", "")
+        .replace("?dl=1", "");
+    }
+
+    // Only update if we’ve transformed the link
+    if (directUrl !== newVal) {
+      localQuestion.soundUrl = directUrl;
+    }
+  }
+);
+
+
 </script>

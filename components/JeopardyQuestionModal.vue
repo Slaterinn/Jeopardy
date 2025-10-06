@@ -10,7 +10,7 @@
       </h3>
 
       <!-- Question text -->
-      <div class="text-xl text-gray-900">
+      <div class="text-xl text-gray-900 whitespace-pre-line">
         {{ question.question || "No question yet" }}
       </div>
 
@@ -24,11 +24,19 @@
         />
       </div>
 
+      <!-- Sound player -->
+      <audio
+        v-if="question.soundUrl"
+        :src="question.soundUrl"
+        controls
+        class="mt-4 w-full"
+      />
+
       <!-- Answer with transition -->
       <transition name="reveal-fade">
         <div
           v-if="question.revealed"
-          class="mt-6 bg-green-100 border-l-4 border-green-500 p-4 rounded-lg text-green-800 text-2xl font-extrabold"
+          class="mt-6 bg-green-100 border-l-4 border-green-500 p-4 rounded-lg text-green-800 text-2xl font-extrabold whitespace-pre-line"
         >
           {{ question.answer || "No answer yet" }}
         </div>

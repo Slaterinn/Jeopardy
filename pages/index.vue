@@ -32,7 +32,7 @@ const mode = ref('edit')
 
 // Always initialize a reactive object
 const board = ref({ categories: [] })
-const teams = ref([])
+//const teams = ref([])
 const players = ref([])
 
 // Load from localStorage on mount
@@ -40,8 +40,8 @@ onMounted(() => {
   const savedBoard = localStorage.getItem('jeopardyBoard')
   if (savedBoard) board.value = JSON.parse(savedBoard)
 
-  const savedTeams = localStorage.getItem('jeopardyTeams')
-  if (savedTeams) teams.value = JSON.parse(savedTeams)
+  const savedPlayers = localStorage.getItem('jeopardyPlayers')
+  if (savedPlayers) players.value = JSON.parse(savedPlayers)
 
   const seen = localStorage.getItem('jeopardyTutorialSeen')
   if (!seen) showTutorial.value = true
@@ -56,9 +56,9 @@ watch(
 )
 
 watch(
-  teams,
-  (newTeams) =>
-    localStorage.setItem('jeopardyTeams', JSON.stringify(newTeams)),
+  players,
+  (newPlayers) =>
+    localStorage.setItem('jeopardyPlayers', JSON.stringify(newPlayers)),
   { deep: true }
 )
 
@@ -77,7 +77,8 @@ function resetBoard() {
   }
   board.value = newBoard
 
-  teams.value = teams.value.map(t => ({ ...t, score: 0 }))
+  // Reset player score
+  players.value = players.value.map(p => ({ ...p, score: 0 }))
 }
 
 const showResetModal = ref(false)
@@ -90,7 +91,7 @@ function confirmReset() {
 // Export JSON
 function exportBoard() {
   const blob = new Blob(
-    [JSON.stringify({ board: board.value, teams: teams.value }, null, 2)],
+    [JSON.stringify({ board: board.value, players: players.value }, null, 2)],
     { type: 'application/json' }
   )
   const link = document.createElement('a')
@@ -108,7 +109,7 @@ function importBoard(event) {
     try {
       const data = JSON.parse(e.target.result)
       if (data.board) board.value = { ...data.board }
-      if (data.teams) teams.value = data.teams.map(t => ({ ...t }))
+      if (data.players) players.value = data.players.map(p => ({ ...p }))
     } catch {
       alert('Invalid JSON file')
     }
