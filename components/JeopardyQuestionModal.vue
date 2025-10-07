@@ -67,6 +67,50 @@
           {{ question.taken ? 'Unmark Taken' : 'Mark Taken' }}
         </button>
       </div>
+
+      <!-- Timer Section -->
+      <div class="mt-6 text-center">
+        <!-- Timer Display -->
+        <div
+          v-if="timer !== null"
+          class="text-4xl font-extrabold text-red-600 drop-shadow-lg transition-all duration-300"
+          :class="{ 'animate-pulse': timerActive }"
+        >
+          {{ timer }}
+        </div>
+
+        <!-- Timer Controls -->
+        <div class="mt-3">
+          <button
+            v-if="!timerActive && timer === null"
+            @click="startTimer()"
+            class="px-4 py-2 text-sm bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+          >
+            Start Timer
+          </button>
+
+          <button
+            v-else-if="timerActive"
+            @click="stopTimer()"
+            class="px-4 py-2 text-sm bg-red-500 text-white rounded-md hover:bg-red-600"
+          >
+            Stop Timer
+          </button>
+
+          <button
+            v-else-if="!timerActive && timer !== null"
+            @click="resetTimer()"
+            class="px-3 py-1 text-xs bg-gray-400 text-white rounded-md hover:bg-gray-500"
+          >
+            Reset Timer
+          </button>
+        </div>
+      </div>
+
+
+
+
+
     </div>
   </div>
 </template>
@@ -80,4 +124,72 @@ const props = defineProps({
   }
 })
 const emit = defineEmits(['close', 'reveal', 'toggle-taken'])
+
+
+//Timer state
+import { ref } from 'vue'
+
+const timer = ref(null)
+const timerActive = ref(false)
+let interval = null
+
+// Define audio elements
+const timerSound = new Audio('/sounds/jeopardy-countdown.mp3') // looping countdown sound
+timerSound.loop = true
+
+const finalSound = new Audio('/sounds/timer-end.mp3') // sound at timer end
+
+function startTimer() {
+  timer.value = 5 // adjust duration here
+  timerActive.value = true
+  clearInterval(interval)
+
+  // Start countdown sound
+  timerSound.currentTime = 0
+  timerSound.play().catch(() => {
+    console.warn('Autoplay blocked: user interaction needed first')
+  })
+
+  interval = setInterval(() => {
+    if (timer.value > 0) {
+      timer.value--
+    } else {
+      clearInterval(interval)
+      timerActive.value = false
+
+      // Stop countdown sound
+      timerSound.pause()
+      timerSound.currentTime = 0
+
+      // Play final sound
+      finalSound.currentTime = 0
+      finalSound.play().catch(() => {
+        console.warn('Autoplay blocked: user interaction needed first')
+      })
+
+      // Dramatic flash
+      const flash = document.createElement('div')
+      flash.className = 'screen-flash'
+      document.body.appendChild(flash)
+      setTimeout(() => flash.remove(), 600)
+    }
+  }, 1000)
+}
+
+
+
+function stopTimer() {
+  clearInterval(interval)
+  timerActive.value = false
+  // Stop countdown sound
+  timerSound.pause()
+  timerSound.currentTime = 0
+}
+
+function resetTimer() {
+  clearInterval(interval)
+  timer.value = null
+  timerActive.value = false
+}
+
 </script>

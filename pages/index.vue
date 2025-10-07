@@ -32,7 +32,6 @@ const mode = ref('edit')
 
 // Always initialize a reactive object
 const board = ref({ categories: [] })
-//const teams = ref([])
 const players = ref([])
 
 // Load from localStorage on mount
