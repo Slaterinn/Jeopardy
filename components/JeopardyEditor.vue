@@ -99,6 +99,15 @@
           />
         </div>
         <div class="mb-4">
+          <label class="block font-semibold mb-1">YouTube URL</label>
+          <input
+            v-model="localQuestion.youtubeUrl"
+            class="w-full border rounded p-2"
+            placeholder="Optional YouTube video link"
+          />
+          <p class="text-sm text-gray-500 mt-1">Example: https://www.youtube.com/watch?v=dQw4w9WgXcQ</p>
+        </div>
+        <div class="mb-4">
           <label class="block font-semibold mb-1">Answer</label>
           <input
             v-model="localQuestion.answer"
@@ -167,6 +176,7 @@ function addCategory() {
       answer: '',
       imageUrl: '',
       soundUrl: '',
+      youtubeUrl: '',
       revealed: false
     }))
   }
@@ -215,6 +225,7 @@ function addQuestion(ci, qi) {
         answer: '',
         imageUrl: '', 
         soundUrl: '',
+        youtubeUrl: '',
         revealed: false
       }
       return { ...cat, questions: newQuestions }
@@ -230,6 +241,7 @@ function openEditor(ci, qi) {
   localQuestion.answer = q.answer
   localQuestion.imageUrl = q.imageUrl || ''
   localQuestion.soundUrl = q.soundUrl || ''
+  localQuestion.youtubeUrl = q.youtubeUrl || ''
 }
 
 function closeEditor() {
@@ -251,7 +263,8 @@ function saveQuestion() {
         question: localQuestion.question,
         answer: localQuestion.answer,
         imageUrl: localQuestion.imageUrl,
-        soundUrl: localQuestion.soundUrl
+        soundUrl: localQuestion.soundUrl,
+        youtubeUrl: localQuestion.youtubeUrl
       }
       return { ...cat, questions: newQuestions }
     })

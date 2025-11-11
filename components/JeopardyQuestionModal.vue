@@ -32,6 +32,41 @@
         class="mt-4 w-full"
       />
 
+      <!-- YouTube video -->
+      <div v-if="question.youtubeUrl" class="flex flex-col items-center mt-6">
+        <div v-if="!showVideo">
+          <button
+            @click="playVideo"
+            class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-md transition"
+          >
+            ▶ Play Video
+          </button>
+        </div>
+
+        <transition name="fade">
+          <div
+            v-if="showVideo"
+            class="relative w-full max-w-2xl aspect-video mt-4 rounded-lg overflow-hidden shadow-lg"
+          >
+            <iframe
+              :src="youtubeEmbedUrl"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              class="w-full h-full"
+            ></iframe>
+
+            <button
+              @click="closeVideo"
+              class="absolute top-2 right-2 bg-indigo-700 bg-opacity-80 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-indigo-800 transition"
+            >
+              ✕
+            </button>
+          </div>
+        </transition>
+      </div>
+
+
       <!-- Answer with transition -->
       <transition name="reveal-fade">
         <div
@@ -127,7 +162,7 @@ const emit = defineEmits(['close', 'reveal', 'toggle-taken'])
 
 
 //Timer state
-import { ref } from 'vue'
+import { ref, computed  } from 'vue'
 
 const timer = ref(null)
 const timerActive = ref(false)
@@ -190,6 +225,25 @@ function resetTimer() {
   clearInterval(interval)
   timer.value = null
   timerActive.value = false
+}
+
+//Video elements
+const showVideo = ref(false)
+
+const youtubeEmbedUrl = computed(() => {
+  const url = props.question.youtubeUrl
+  if (!url) return ''
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]+)/)
+  const id = match ? match[1] : ''
+  return id ? `https://www.youtube.com/embed/${id}?autoplay=1` : ''
+})
+
+function playVideo() {
+  showVideo.value = true
+}
+
+function closeVideo() {
+  showVideo.value = false
 }
 
 </script>
