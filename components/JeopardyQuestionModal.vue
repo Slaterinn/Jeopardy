@@ -175,7 +175,7 @@ timerSound.loop = true
 const finalSound = new Audio('/sounds/timer-end.mp3') // sound at timer end
 
 function startTimer() {
-  timer.value = 5 // adjust duration here
+  timer.value = 30 // adjust duration here
   timerActive.value = true
   clearInterval(interval)
 
